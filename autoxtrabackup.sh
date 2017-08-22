@@ -34,21 +34,21 @@ usage () {
                 # Dated folders inside this one will be created
                 backupDir=\"/var/backups/autoxtrabackup\"
 
-				# Mount Type?  Possible values: nfs, hard
-				# nfs means that the backup directory is an NFS
-				# mount and should be checked that it is mounted
-				# before starting the backup.
-				# hard means that the backup directory is a physical
-				# filesystem on the machine and should only be tested
-				# to see if it exists.
-				mounttype=\"nfs\"
-				
-				# Incremental Type?  Possible values: full, incr
-				# full means create each incremental backup using the
-				# last full backup as a base
-				# incr means use the last incremental as the base for
-				# the next incremental
-				incrtype=\"full\"
+		# Mount Type?  Possible values: nfs, hard
+		# nfs means that the backup directory is an NFS
+		# mount and should be checked that it is mounted
+		# before starting the backup.
+		# hard means that the backup directory is a physical
+		# filesystem on the machine and should only be tested
+		# to see if it exists.
+		mounttype=\"nfs\"
+
+		# Incremental Type?  Possible values: full, incr
+		# full means create each incremental backup using the
+		# last full backup as a base
+		# incr means use the last incremental as the base for
+		# the next incremental
+		incrtype=\"full\"
 				
                 # Temp directory
                 tmpDir=/tmp
@@ -67,7 +67,7 @@ usage () {
 
                 # Username to access the MySQL server. On CentOS with mysql packaged installs,
                 # you can use the your .my.cnf file in your home directory. On other distributions,
-				# fill in your MySQL credentials
+		# fill in your MySQL credentials
                 mysqlUser=\`grep user ~/.my.cnf | tail -n 1 | cut -d\"=\" -f2 | awk '{print $1}'\`
                 mysqlPwd=\`grep password ~/.my.cnf | tail -n 1 | cut -d\"\\\"\" -f2 | awk '{print $1}'\`
 
@@ -151,12 +151,13 @@ fi
 if [[ $mounttype == nfs ]]; then
     grep -qs $backupDir /proc/mounts
     if [ $? -ne 0 ]; then
-	    mount "$backupDir"
-		if [ $? -ne 0 ]; then
+	mount "$backupDir"
+	if [ $? -ne 0 ]; then
             echo "Something went wrong with mounting the backup filesystem!"
-			exit 1
+	    exit 1
         fi
-	fi
+    fi
+fi
 
 # Check if backup directory exists
 if [ ! -d "$backupDir" ]; then
@@ -284,11 +285,11 @@ else
                 #echo "It's been $difference hours since last full, doing an incremental backup"
                 lastFullDir=`date -d@"$lastFull" '+%Y-%m-%d_%H-%M-%S'`
                 lastIncrDir=`date -d@"$lastInc" '+%Y-%m-%d_%H-%M-%S'`
-				if [[ $incrtype == full ]]; then
-					/usr/bin/xtrabackup --user=$mysqlUser --password=$mysqlPwd --no-timestamp $compress $compressThreads --rsync --tmpdir=$tmpDir --incremental --incremental-basedir="$dailyDir"/"$lastFullDir"_full "$dailyDir"/"$dateNow"_incr > $backupLog 2>&1
-				else
-					/usr/bin/xtrabackup --user=$mysqlUser --password=$mysqlPwd --no-timestamp $compress $compressThreads --rsync --tmpdir=$tmpDir --incremental --incremental-basedir="$dailyDir"/"$lastIncrDir"_incr "$dailyDir"/"$dateNow"_incr > $backupLog 2>&1
-				fi
+		if [[ $incrtype == full ]]; then
+			/usr/bin/xtrabackup --user=$mysqlUser --password=$mysqlPwd --no-timestamp $compress $compressThreads --rsync --tmpdir=$tmpDir --incremental --incremental-basedir="$dailyDir"/"$lastFullDir"_full "$dailyDir"/"$dateNow"_incr > $backupLog 2>&1
+		else
+			/usr/bin/xtrabackup --user=$mysqlUser --password=$mysqlPwd --no-timestamp $compress $compressThreads --rsync --tmpdir=$tmpDir --incremental --incremental-basedir="$dailyDir"/"$lastIncrDir"_incr "$dailyDir"/"$dateNow"_incr > $backupLog 2>&1
+		fi
                 echo $dateNowUnix > "$dailyDir"/latest_incremental
         elif [ $differenceFull -gt $hoursBeforeFull ]; then
                 #echo "It's been $difference hours since last full backup, time for a new full backup"
