@@ -1,8 +1,9 @@
 # autoxtrabackup
 An updated bash script for doing backups with the Percona xtrabackup program
 
-The configuration file is located at /etc/default/autoxtrabackup and should look something like this:
-backupDir=/var/tungsten/backup
+The configuration file is located at **/etc/default/autoxtrabackup** and should look something like this:
+
+```backupDir=/var/tungsten/backup
 mounttype=hard
 incrtype=full
 tmpDir=/tmp
@@ -18,3 +19,4 @@ keepMonths=9
 sendEmail=never
 emailAddress=
 backupLog=$tmpDir/autoxtrabackup.log
+```
