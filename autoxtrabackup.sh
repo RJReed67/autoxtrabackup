@@ -11,6 +11,7 @@
 
 backupDir=/var/backup
 mounttype=nfs
+nfsmountpoint=/var/backup
 incrtype=full
 tmpDir=/tmp
 hoursBeforeFull=167
@@ -49,6 +50,13 @@ usage () {
 		# incr means use the last incremental as the base for
 		# the next incremental
 		incrtype=\"full\"
+		
+		# NFS mount point
+		# Since the actual backup directory may be further down
+		# the directory tree from the actual base NFS mount
+		# point, this configuration sets the actual NFS mount to
+		# check for.
+		nfsmountpoint=\"/var/backup\"
 				
                 # Temp directory
                 tmpDir=/tmp
@@ -149,9 +157,9 @@ fi
 
 # Check mounttype for directory testing
 if [[ $mounttype == nfs ]]; then
-    grep -qs $backupDir /proc/mounts
+    grep -qs $nfsmountpoint /proc/mounts
     if [ $? -ne 0 ]; then
-	mount "$backupDir"
+	mount "$nfsmountpoint"
 	if [ $? -ne 0 ]; then
             echo "Something went wrong with mounting the backup filesystem!"
 	    exit 1
