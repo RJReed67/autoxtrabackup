@@ -3,7 +3,8 @@ An updated bash script for doing backups with the Percona xtrabackup program
 
 The configuration file is located at **/etc/default/autoxtrabackup** and should look something like this:
 
-```backupDir=/var/tungsten/backup
+```
+backupDir=/var/tungsten/backup
 mounttype=hard
 incrtype=full
 tmpDir=/tmp
