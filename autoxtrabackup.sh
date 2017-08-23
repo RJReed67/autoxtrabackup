@@ -303,6 +303,8 @@ else
                 #echo "It's been $difference hours since last full backup, time for a new full backup"
                 echo $dateNowUnix > "$dailyDir"/latest_full
                 /usr/bin/innobackupex --user=$mysqlUser --password=$mysqlPwd --no-timestamp $compress $compressThreads --tmpdir=$tmpDir --rsync "$dailyDir"/"$dateNow"_full > $backupLog 2>&1
+	else
+		echo "It has not been long enough since the last incremental backup, nothing done"
         fi
 fi
 
