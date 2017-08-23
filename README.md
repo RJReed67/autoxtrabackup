@@ -1,5 +1,19 @@
-# autoxtrabackup
-An updated bash script for doing backups with the Percona xtrabackup program
+# Autoxtrabackup
+An updated bash script for automatic MySQL scheduled backups using Percona innobackupex (xtrabackup).
+This script uses the innobackupex wrapper for xtrabackup from Percona, included in percona-xtrabackup.
+
+Create full & incremental backups automatically, with configurable retention and compression, and optional e-mail output.
+
+# Requirements
+Supported MySQL distributions: MySQL, Percona Server, MariaDB
+Supported Linux distributions: Debian, Ubuntu, CentOS, RedHat
+Dependencies: percona-xtrabackup
+
+This script has been tested on CentOS 6.9 with MySQL server
+
+Original script can be found here: https://github.com/gstorme/autoxtrabackup
+
+The script that was used as a base for this one can be found here: https://wiki.itadmins.net/mysql_mariadb_galera/galera_autoxtrabackup
 
 The configuration file is located at **/etc/default/autoxtrabackup** and should look something like this:
 
