@@ -98,27 +98,27 @@ usage () {
         echo
         echo -e " Restore a full backup";
         echo -e "\tRestore a compressed backup:";
-        echo -e "\t\t1: xtrabackup --decompress $backupDir/(daily/weekly/monthly)/BACKUP-DIR";
+        echo -e "\t\t1: innobackupex --decompress $backupDir/(daily/weekly/monthly)/BACKUP-DIR";
         echo -e "\t\t2: Follow same steps as for non-compressed backups";
         echo -e "\tRestore a non-compressed backup:";
-        echo -e "\t\t1: xtrabackup --apply-log $backupDir/(daily/weekly/monthly)/BACKUP-DIR";
+        echo -e "\t\t1: innobackupex --apply-log $backupDir/(daily/weekly/monthly)/BACKUP-DIR";
         echo -e "\t\t2: Stop your MySQL server";
         echo -e "\t\t3: Delete everything in the MySQL data directory (usually /var/lib/mysql)";
-        echo -e "\t\t4: xtrabackup --copy-back $backupDir/(daily/weekly/monthly)/BACKUP-DIR";
+        echo -e "\t\t4: innobackupex --copy-back $backupDir/(daily/weekly/monthly)/BACKUP-DIR";
         echo -e "\t\t5: Restore the ownership of the files in the MySQL data directory (chown -R mysql:mysql /var/lib/mysql/)";
         echo -e "\t\t6: Start your MySQL server";
         echo
         echo -e " Restore an incremental backup";
         echo -e "\t1: If compressed, first decompress the backup (see above)";
         echo -e "\t2: First, prepare the base backup";
-        echo -e "\t3: xtrabackup --apply-log --redo-only $backupDir/(daily/weekly/monthly)/FULL-BACKUP-DIR";
+        echo -e "\t3: innobackupex --apply-log --redo-only $backupDir/(daily/weekly/monthly)/FULL-BACKUP-DIR";
         echo -e "\t4: Now, apply the incremental backup to the base backup.";
         echo -e "\t5: If you have multiple incrementals, pass the --redo-only when merging all incrementals";
         echo -e "\t\texcept for the last one. Also, merge them in the chronological order that the backups were made";
-        echo -e "\t6: xtrabackup --apply-log --redo-only $backupDir/(daily/weekly/monthly)/FULL-BACKUP-DIR";
+        echo -e "\t6: innobackupex --apply-log --redo-only $backupDir/(daily/weekly/monthly)/FULL-BACKUP-DIR";
         echo -e "\t\t--incremental-dir=$backupDir/(daily/weekly/monthly)/INC-BACKUP-DIR";
         echo -e "\t7: Once you merge the base with all the increments, you can prepare it to roll back the uncommitted transactions:";
-        echo -e "\t8: xtrabackup --apply-log $backupDir/(daily/weekly/monthly)/BACKUP-DIR";
+        echo -e "\t8: innobackupex --apply-log $backupDir/(daily/weekly/monthly)/BACKUP-DIR";
         echo -e "\t9: Follow the same steps as for a full backup restore now";
 }
 
@@ -149,9 +149,9 @@ dailyDir=$backupDir/daily
 weeklyDir=$backupDir/weekly
 monthlyDir=$backupDir/monthly
 
-# Check if xtrabackup is installed (percona-xtrabackup)
-if [[ -z "$(command -v xtrabackup)" ]]; then
-        echo "The xtrabackup executable was not found, check if you have installed percona-xtrabackup."
+# Check if innobackupex is installed (percona-xtrabackup)
+if [[ -z "$(command -v innobackupex)" ]]; then
+        echo "The innobackupex executable was not found, check if you have installed percona-xtrabackup."
         exit 1
 fi
 
@@ -238,7 +238,7 @@ if [ $tomorrow -eq 1 ]; then
 
         # Check if we must take a full or incremental backup
         if [ $difference -gt $hoursBeforeFull ]; then
-                /usr/bin/xtrabackup --user=$mysqlUser --password=$mysqlPwd --no-timestamp $compress $compressThreads --tmpdir=$tmpDir --rsync "$monthlyDir"/"$dateNow" > $backupLog 2>&1
+                /usr/bin/innobackupex --user=$mysqlUser --password=$mysqlPwd --no-timestamp $compress $compressThreads --tmpdir=$tmpDir --rsync "$monthlyDir"/"$dateNow" > $backupLog 2>&1
 
                 echo $dateNowUnix > "$monthlyDir"/last_monthly
 
@@ -265,7 +265,7 @@ elif [ $weekTomorrow == $weekNext ]; then
 
         # Check if we must take a full or incremental backup
         if [ $difference -gt $hoursBeforeFull ]; then
-                /usr/bin/xtrabackup --user=$mysqlUser --password=$mysqlPwd --no-timestamp $compress $compressThreads --tmpdir=$tmpDir --rsync "$weeklyDir"/"$dateNow" > $backupLog 2>&1
+                /usr/bin/innobackupex --user=$mysqlUser --password=$mysqlPwd --no-timestamp $compress $compressThreads --tmpdir=$tmpDir --rsync "$weeklyDir"/"$dateNow" > $backupLog 2>&1
                 echo $dateNowUnix > "$weeklyDir"/last_weekly
 
                 # Copy to daily
@@ -294,15 +294,15 @@ else
                 lastFullDir=`date -d@"$lastFull" '+%Y-%m-%d_%H-%M-%S'`
                 lastIncrDir=`date -d@"$lastInc" '+%Y-%m-%d_%H-%M-%S'`
 		if [[ $incrtype == full ]]; then
-			/usr/bin/xtrabackup --user=$mysqlUser --password=$mysqlPwd --no-timestamp $compress $compressThreads --rsync --tmpdir=$tmpDir --incremental --incremental-basedir="$dailyDir"/"$lastFullDir"_full "$dailyDir"/"$dateNow"_incr > $backupLog 2>&1
+			/usr/bin/innobackupex --user=$mysqlUser --password=$mysqlPwd --no-timestamp $compress $compressThreads --rsync --tmpdir=$tmpDir --incremental --incremental-basedir="$dailyDir"/"$lastFullDir"_full "$dailyDir"/"$dateNow"_incr > $backupLog 2>&1
 		else
-			/usr/bin/xtrabackup --user=$mysqlUser --password=$mysqlPwd --no-timestamp $compress $compressThreads --rsync --tmpdir=$tmpDir --incremental --incremental-basedir="$dailyDir"/"$lastIncrDir"_incr "$dailyDir"/"$dateNow"_incr > $backupLog 2>&1
+			/usr/bin/innobackupex --user=$mysqlUser --password=$mysqlPwd --no-timestamp $compress $compressThreads --rsync --tmpdir=$tmpDir --incremental --incremental-basedir="$dailyDir"/"$lastIncrDir"_incr "$dailyDir"/"$dateNow"_incr > $backupLog 2>&1
 		fi
                 echo $dateNowUnix > "$dailyDir"/latest_incremental
         elif [ $differenceFull -gt $hoursBeforeFull ]; then
                 #echo "It's been $difference hours since last full backup, time for a new full backup"
                 echo $dateNowUnix > "$dailyDir"/latest_full
-                /usr/bin/xtrabackup --user=$mysqlUser --password=$mysqlPwd --no-timestamp $compress $compressThreads --tmpdir=$tmpDir --rsync "$dailyDir"/"$dateNow"_full > $backupLog 2>&1
+                /usr/bin/innobackupex --user=$mysqlUser --password=$mysqlPwd --no-timestamp $compress $compressThreads --tmpdir=$tmpDir --rsync "$dailyDir"/"$dateNow"_full > $backupLog 2>&1
         fi
 fi
 
