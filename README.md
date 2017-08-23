@@ -6,7 +6,9 @@ Create full & incremental backups automatically, with configurable retention and
 
 # Requirements
 Supported MySQL distributions: MySQL, Percona Server, MariaDB
+
 Supported Linux distributions: Debian, Ubuntu, CentOS, RedHat
+
 Dependencies: percona-xtrabackup
 
 This script has been tested on CentOS 6.9 with MySQL server
