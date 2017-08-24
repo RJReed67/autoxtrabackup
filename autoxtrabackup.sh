@@ -76,8 +76,8 @@ usage () {
                 # Username to access the MySQL server. On CentOS with mysql packaged installs,
                 # you can use the your .my.cnf file in your home directory. On other distributions,
 		# fill in your MySQL credentials
-                mysqlUser=\`grep user ~/.my.cnf | tail -n 1 | cut -d\"=\" -f2 | awk '{print $1}'\`
-                mysqlPwd=\`grep password ~/.my.cnf | tail -n 1 | cut -d\"\\\"\" -f2 | awk '{print $1}'\`
+                mysqlUser=\`grep user ~/.my.cnf | head -n 1 | cut -d\"=\" -f2 | awk '{print $1}'\`
+                mysqlPwd=\`grep password ~/.my.cnf | head -n 1 | cut -d\"\\\"\" -f2 | awk '{print $1}'\`
 
                 # Compress the backup or not. Set compress to true/false. Compression is enabled by default
                 compression=true
