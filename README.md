@@ -25,8 +25,8 @@ mounttype=hard
 nfsmountpoint=/var/backup
 incrtype=full
 tmpDir=/tmp
-mysqlUser=`grep user ~/.my.cnf | tail -n 1 | cut -d"=" -f2 | awk '{print }'`
-mysqlPwd="`grep password ~/.my.cnf | tail -n 1 | cut -d\"\\\"\" -f2 | awk '{print }'`"
+mysqlUser=`grep user ~/.my.cnf | head -n 1 | cut -d"=" -f2 | awk '{print }'`
+mysqlPwd="`grep password ~/.my.cnf | head -n 1 | cut -d\"\\\"\" -f2 | awk '{print }'`"
 hoursBeforeFull=167
 hoursBeforeInc=23
 compression=true
@@ -38,3 +38,4 @@ sendEmail=never
 emailAddress=
 backupLog=$tmpDir/autoxtrabackup.log
 ```
+**Note:** The grep commands above will parse out the first user= and password= lines in the .mf.cnf file. Also, the password entry must be surrounded by double quotes and should **not** contain double quotes.
