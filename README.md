@@ -38,4 +38,4 @@ sendEmail=never
 emailAddress=
 backupLog=$tmpDir/autoxtrabackup.log
 ```
-**Note:** The grep commands above will parse out the first user= and password= lines in the .mf.cnf file. Also, the password entry must be surrounded by double quotes and should **not** contain double quotes.
+**Note:** The grep commands above will parse out the first user= and password= lines in the .my.cnf file. Also, the password entry must be surrounded by double quotes and should **not** contain double quotes. This file should also have a chmod mask of 600 to keep the information in it secure.
