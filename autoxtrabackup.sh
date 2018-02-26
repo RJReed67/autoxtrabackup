@@ -221,8 +221,8 @@ delDay=`date -d "-$keepDays days" +%Y-%m-%d`
 delWeek=`date -d "-$keepWeeks weeks" +%Y-%m-%d`
 delMonth=`date -d "-$keepMonths months" +%Y-%m-%d`
 tomorrow=$(TZ=`date | awk '{print $5}'`-24 date +%d)
-weekTomorrow=$((`date -d $dateTomorrow +%V`))
-weekNext=$((`date +%V`+1))
+weekTomorrow=$((`date -d $dateTomorrow +%V | sed 's/^0*//'`))
+weekNext=$((`date +%V | sed 's/^0*//'`+1))
 
 # Check if last day of month
 if [ $tomorrow -eq 1 ]; then
